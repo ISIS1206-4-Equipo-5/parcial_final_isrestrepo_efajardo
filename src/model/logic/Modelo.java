@@ -121,9 +121,9 @@ public class Modelo<T> {
 
 			if (datos.equals(TAXI_SMALL)) {
 
+				
 				while((fila1 = reader1.readNext()) != null) 
 				{
-
 					if(! fila1[0].equals("trip_id") && !fila1[2].equals("") && !fila1[1].equals("") && !fila1[5].equals("")
 							&& !fila1[12].equals(""))
 					{
@@ -132,11 +132,14 @@ public class Modelo<T> {
 						String idTaxi = fila1[1];
 						double millas = Double.parseDouble(fila1[5]);
 						double dinero = Double.parseDouble(fila1[12]);
+						String compania = fila1[14];
+						int pickUp = Integer.valueOf(fila1[19]);
+						int dropOff = Integer.valueOf(fila1[7]);
 
 						if(millas != 0.0 && dinero != 0.0)
 						{
-							DiaTaxi taxi = new DiaTaxi(idTaxi, millas, dinero);
-							rojoNegro.put(fecha, idTaxi, taxi);
+							DiaTaxi taxi = new DiaTaxi(idTaxi, millas, dinero, compania, pickUp, dropOff);
+							rojoNegro.put(compania, idTaxi, taxi);
 							f++;
 						}
 
@@ -241,7 +244,81 @@ public class Modelo<T> {
 	
 	////////////////////////////////////////////////////////////////////////
 	
+	public ArrayList<String> viajesPorCompania()
+	{
+		ArrayList<String> resultados = new ArrayList<>();
+		ArrayList<Compania> companias = tablaCompanias.valueSet();
+		
+		for (Iterator iterator = companias.iterator(); iterator.hasNext();) {
+			Compania compania = (Compania) iterator.next();
+			String cadaValor = compania.darNombre() + "-" + String.valueOf(compania.darNumServicios());
+			
+			resultados.add(cadaValor);
+		}
+		
+		return resultados;
+	}
+
+	public ArrayList<String> viajesPorArea()
+	{
+		ArrayList<Compania> companias = tablaCompanias.valueSet();
+		ArrayList<Integer> usados = new ArrayList<>();
+		
+		for (Iterator iterator = companias.iterator(); iterator.hasNext();) {
+			Compania compania = (Compania) iterator.next();
+			ArrayList<DiaTaxi> taxis = rojoNegro.get(compania.darNombre()).valueSet();
+			
+			// Preguntar por dropoffs para actulizar
+			for (Iterator iterator2 = taxis.iterator(); iterator2.hasNext();) {
+				DiaTaxi diaTaxi = (DiaTaxi) iterator2.next();
+				if (usados.contains(diaTaxi.darDropOff()))
+				{
+					
+				}
+				else
+				{
+					String viaje = diaTaxi.darDropOff() + "-" + diaTaxi.servicios;
+					
+				}
+			}
+		}
+		
+		//retornar
+		return null;
+	}
 	
-
-
+	public void puntosDeDescanso(String pNombre)
+	{
+		ArrayList<String> comp2 = viajesPorArea();
+		ArrayList<String> gg = new ArrayList<String>();
+		for (Iterator iterator = comp2.iterator(); iterator.hasNext();) {
+			String actual2 = (String) iterator.next();
+			if (actual2.contains(pNombre))
+			{
+				
+			}
+		}
+	}
+	
+	public Iterable<Edge> caminoMasCorto(int pickUp, int dropOff, LocalTime tiempoInicio)
+	{
+		Digraph grafo = null;
+		Iterable<Edge> camino = null;
+		for (int i = 0; i < grafos.length; i++) 
+		{
+			Iterator<Edge> arcos = grafos[i].edges().iterator();
+			if( arcos.hasNext() && arcos.next().time().equals(tiempoInicio))
+			{
+				grafo = grafos[i];
+			}
+		}
+		
+		DijkstraSP orden = new DijkstraSP(grafo, pickUp);
+		
+		camino = orden.pathTo(dropOff);
+		System.out.println("Tiempo estimado de llegada: " + orden.distTo(dropOff));
+		
+		
+		return camino;
+	}
 }

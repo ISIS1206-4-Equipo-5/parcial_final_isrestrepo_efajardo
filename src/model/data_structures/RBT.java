@@ -21,14 +21,14 @@ public class RBT{
 
 	// BST helper node data type
 	private class NodeRBT {
-		private LocalDate fecha;           // key
+		private String nomCompania;           // key
 		private TablaSeparateChaining tabla;          // associated data
 		private NodeRBT left, right;  // links to left and right subtrees
 		private boolean color;     // color of parent link
 		private int size;          // subtree count
 
-		public NodeRBT(LocalDate fecha,TablaSeparateChaining tabla, boolean color, int size) {
-			this.fecha = fecha;
+		public NodeRBT(String fecha,TablaSeparateChaining tabla, boolean color, int size) {
+			this.nomCompania = fecha;
 			this.tabla = tabla;
 			this.color = color;
 			this.size = size;
@@ -66,15 +66,15 @@ public class RBT{
 	}
 
 	
-	public TablaSeparateChaining get(LocalDate key) {
+	public TablaSeparateChaining get(String key) {
 		if (key == null) throw new IllegalArgumentException("argument to get() is null");
 		return get(root, key);
 	}
 
-	private TablaSeparateChaining get(NodeRBT x, LocalDate key) {
+	private TablaSeparateChaining get(NodeRBT x, String key) {
 		if (key == null) throw new IllegalArgumentException("calls get() with a null key");
 		while (x != null) {
-			int cmp = key.compareTo(x.fecha);
+			int cmp = key.compareTo(x.nomCompania);
 			if      (cmp < 0) x = x.left;
 			else if (cmp > 0) x = x.right;
 			else              return x.tabla;
@@ -82,16 +82,16 @@ public class RBT{
 		return null;
 	}
 
-	public int getHeight(LocalDate key) {
+	public int getHeight(String key) {
 		return height(root) - height(getNode(root, key));
 	}
 
-	private NodeRBT getNode(NodeRBT x, LocalDate key) {
+	public NodeRBT getNode(NodeRBT x, String key) {
 		if (key == null) 
 			throw new IllegalArgumentException("calls get() with a null key");
 		if (x == null) 
 			return null;
-		int cmp = key.compareTo(x.fecha);
+		int cmp = key.compareTo(x.nomCompania);
 		if      (cmp < 0) 
 			return getNode(x.left, key);
 		else if (cmp > 0) 
@@ -100,11 +100,11 @@ public class RBT{
 			return x;
 	}
 	
-	public boolean contains(LocalDate fecha) {
+	public boolean contains(String fecha) {
 		return get(fecha) != null;
 	}
 
-	public void put(LocalDate fecha, String idTaxi, DiaTaxi taxi) {
+	public void put(String fecha, String idTaxi, DiaTaxi taxi) {
 		if (fecha == null) throw new IllegalArgumentException("first argument to put() is null");
 
 		root = put(root, fecha, idTaxi, taxi);
@@ -113,7 +113,7 @@ public class RBT{
 	}
 
 	// insert the key-value pair in the subtree rooted at h
-	private NodeRBT put(NodeRBT h, LocalDate fecha, String idTaxi, DiaTaxi taxi) { 
+	private NodeRBT put(NodeRBT h, String fecha, String idTaxi, DiaTaxi taxi) { 
 		if (h == null)
 		{
 			TablaSeparateChaining tabla = new TablaSeparateChaining();
@@ -123,7 +123,7 @@ public class RBT{
 		}
 		//        return new NodeRBT(key, val, RED, 1);
 
-		int cmp = fecha.compareTo(h.fecha);
+		int cmp = fecha.compareTo(h.nomCompania);
 		if      (cmp < 0) h.left  = put(h.left, fecha, idTaxi, taxi); 
 		else if (cmp > 0) h.right = put(h.right, fecha, idTaxi, taxi); 
 		else              h.tabla.put(idTaxi, taxi);
@@ -183,9 +183,9 @@ public class RBT{
 		return height(root);
 	}
 
-	public LocalDate min() {
+	public String min() {
 		if (isEmpty()) System.out.println("calls min() with empty symbol table");
-		return min(root).fecha;
+		return min(root).nomCompania;
 	}
 
 	private NodeRBT min(NodeRBT x) { 
@@ -193,9 +193,9 @@ public class RBT{
 		else                return min(x.left); 
 	}
 
-	public LocalDate max() {
+	public String max() {
 		if (isEmpty()) System.out.println("calls max() with empty symbol table");
-		return max(root).fecha;
+		return max(root).nomCompania;
 	}
 
 	private NodeRBT max(NodeRBT x) { 
@@ -209,22 +209,22 @@ public class RBT{
 		return keysInRange(min(), max());
 	}
 
-	public ArrayList keysInRange(LocalDate init, LocalDate end) {
+	public ArrayList keysInRange(String init, String end) {
 		if (init == null) throw new IllegalArgumentException("first argument to keys() is null");
 		if (end == null) throw new IllegalArgumentException("second argument to keys() is null");
 
-		ArrayList<LocalDate> arreglo = new ArrayList<LocalDate>();
+		ArrayList<String> arreglo = new ArrayList<String>();
 		keys(root, arreglo, init, end);
 		return arreglo;
 	}
 
 
-	private void keys(NodeRBT x, ArrayList<LocalDate> arreglo, LocalDate lo, LocalDate hi) { 
+	private void keys(NodeRBT x, ArrayList<String> arreglo, String lo, String hi) { 
 		if (x == null) return; 
-		int cmplo = lo.compareTo(x.fecha); 
-		int cmphi = hi.compareTo(x.fecha); 
+		int cmplo = lo.compareTo(x.nomCompania); 
+		int cmphi = hi.compareTo(x.nomCompania); 
 		if (cmplo < 0) keys(x.left, arreglo, lo, hi); 
-		if (cmplo <= 0 && cmphi >= 0) arreglo.add(x.fecha); 
+		if (cmplo <= 0 && cmphi >= 0) arreglo.add(x.nomCompania); 
 		if (cmphi > 0) keys(x.right, arreglo, lo, hi); 
 	} 
 
@@ -232,7 +232,7 @@ public class RBT{
 		return valuesInRange(min(), max());
 	}
 	
-	public ArrayList valuesInRange(LocalDate init, LocalDate end) {
+	public ArrayList valuesInRange(String init, String end) {
 		if (init == null)
 			throw new IllegalArgumentException("first argument to keys() is null");
 		if (end == null) 
@@ -243,11 +243,11 @@ public class RBT{
 		return arreglo;
 	}
 
-	private void values(NodeRBT x, ArrayList arreglo, LocalDate lo, LocalDate hi) {
+	private void values(NodeRBT x, ArrayList arreglo, String lo, String hi) {
 		if (x == null) 
 			return; 
-		int cmplo = lo.compareTo(x.fecha); 
-		int cmphi = hi.compareTo(x.fecha); 
+		int cmplo = lo.compareTo(x.nomCompania); 
+		int cmphi = hi.compareTo(x.nomCompania); 
 		if (cmplo < 0) 
 			values(x.left, arreglo, lo, hi); 
 		if (cmplo <= 0 && cmphi >= 0) {

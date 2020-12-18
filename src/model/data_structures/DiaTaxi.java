@@ -5,12 +5,17 @@ public class DiaTaxi implements Comparable<DiaTaxi> {
 	public double millas, dinero;
 	public int servicios;
 	public String id;
+	public String compania;
+	private int pickUp, dropOff;
 	
-	public DiaTaxi (String id, double millas, double dinero)
+	public DiaTaxi (String id, double millas, double dinero, String companhia, int pickUpCa, int dropOffCa)
 	{
 		this.millas = millas;
 		this.dinero = dinero;
 		this.id = id;
+		this.compania = companhia;
+		this.pickUp = pickUpCa;
+		this.dropOff = dropOffCa;
 		servicios = 1;
 	}
 	
@@ -33,7 +38,20 @@ public class DiaTaxi implements Comparable<DiaTaxi> {
 	{
 		servicios++;
 	}
-
+	
+	public String darCompania()
+	{
+		return compania;
+	}
+	
+	public int darPickUp(){
+		return pickUp;
+	}
+	
+	public int darDropOff()
+	{
+		return dropOff;
+	}
 	@Override
 	public int compareTo(DiaTaxi o) {
 		int rta = 0;

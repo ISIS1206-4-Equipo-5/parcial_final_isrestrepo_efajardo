@@ -38,6 +38,10 @@ public class Compania {
 		return idsTaxisAfiliados.size();
 	}
 	
+	public ArrayList darTaxis()
+	{
+		return idsTaxisAfiliados;
+	}
 	public int compareNumTaxis(Compania x) {
 		if (darNumTaxis() < x.darNumTaxis()) return -1;
 		else if (darNumTaxis() > x.darNumTaxis()) return 1;
